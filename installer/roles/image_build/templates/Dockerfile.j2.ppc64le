@@ -10,11 +10,17 @@ enabled=1 \n\
 gpgcheck=1 \n\
 gpgkey=ftp://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL7/gpg-pubkey-6976a827-5164221b \n' > /etc/yum.repos.d/advance-toolchain.repo
 
+RUN echo $'[PowerTools] \n\
+name=CentOS-$releasever - PowerTools \n\
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=PowerTools&infra=$infra \n\
+#baseurl=http://mirror.centos.org/$contentdir/$releasever/PowerTools/$basearch/os/ \n\
+gpgcheck=0 \n\
+enabled=1 \n' > /etc/yum.repos.d/CentOS-PowerTools.repo
+
 # sync with installer/roles/image_build/templates/Dockerfile.j2
 RUN dnf -y update && \
   dnf -y install epel-release 'dnf-command(config-manager)' && \
   dnf module -y enable 'postgresql:10' && \
-  dnf config-manager --set-enabled PowerTools && \
   dnf -y install advance-toolchain-at10.0-devel.ppc64le && \
   dnf -y install acl \
   ansible \
